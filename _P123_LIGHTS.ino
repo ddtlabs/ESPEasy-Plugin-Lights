@@ -18,7 +18,7 @@
 #define PLUGIN_VALUENAME3_123 "pct"
 #define PLUGIN_VALUENAME4_123 "colormode"
 
-String  Plugin_123_version = "1.00";
+String  Plugin_123_version = "1.01";
 
 #include <Ticker.h>
 
@@ -295,7 +295,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
         
         Plugin_123_init = true;
         success = true;
-        if (Settings.TaskDevicePluginConfigLong[event->TaskIndex][1]) Plugin_123_triggerSendDataAfterBoot = true;
+//        if (Settings.TaskDevicePluginConfigLong[event->TaskIndex][1]) Plugin_123_triggerSendDataAfterBoot = true;
         break;
       }
 
@@ -665,7 +665,7 @@ void Plugin_123_setPins_Finish()
 
   // send current values via controller plugin, done in PLUGIN_TEN_PER_SECOND
   if (_options.sendData_enabled)
-    Plugin_123_triggerSendData = true; 
+//    Plugin_123_triggerSendData = true; 
 }
 
 
