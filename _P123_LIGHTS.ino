@@ -18,7 +18,7 @@
 #define PLUGIN_VALUENAME3_123 "pct"
 #define PLUGIN_VALUENAME4_123 "colormode"
 
-String  Plugin_123_version = "1.01";
+String  Plugin_123_version = "1.02";
 
 #include <Ticker.h>
 
@@ -270,8 +270,6 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
         }
         else { log += F("noCW "); }
 
-        int ponVal = Settings.TaskDevicePluginConfig[event->TaskIndex][7];
-
         // disable Timer if defaultFadingTime < 0
         if (Plugin_123_defaultFadingTime >= 0) {
           log += F("FADING ");
@@ -281,6 +279,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
 
         log += (_options.maxBri_enabled) ? F("MAXBRI ") : F("CONSTBRI ");
 
+        int ponVal = Settings.TaskDevicePluginConfig[event->TaskIndex][7];
         if (ponVal >= 0 && ponVal <= 100) {
           _lightParam.pct = ponVal;
           _lightParam.state = 1;
@@ -664,8 +663,7 @@ void Plugin_123_setPins_Finish()
   }
 
   // send current values via controller plugin, done in PLUGIN_TEN_PER_SECOND
-  if (_options.sendData_enabled)
-//    Plugin_123_triggerSendData = true; 
+//  if (_options.sendData_enabled)  Plugin_123_triggerSendData = true; 
 }
 
 
