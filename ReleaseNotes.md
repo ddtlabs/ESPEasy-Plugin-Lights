@@ -6,6 +6,7 @@
         see: http://www.letscontrolit.com/forum/viewtopic.php?f=6&t=2395#p11749
 1.02  - fixed: compile error: missed to remove a if statement
 1.03  - adopt global struct names
+1.04  - Fixed wrong RGB pin assignment in PLUGIN_INIT (thanx to Waldmensch)
 
 
 ```

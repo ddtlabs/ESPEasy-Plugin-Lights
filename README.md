@@ -2,7 +2,7 @@
 
 ###An ESPEasy Plugin to Control RGB-WW-CW Lights###
 
-Version 1.03 release notes: [ReleaseNotes.md](ReleaseNotes.md)
+Version 1.04 release notes: [ReleaseNotes.md](ReleaseNotes.md)
 
 --
 

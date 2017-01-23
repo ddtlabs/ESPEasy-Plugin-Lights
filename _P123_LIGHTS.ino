@@ -251,7 +251,8 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
 
         if (Plugin_123_options.rgb_enabled) {
           for (int PinIndex = 0; PinIndex < 3; PinIndex++) {
-            Plugin_123_pins[PinIndex].PinNo = ExtraTaskSettings.TaskDevicePluginConfigLong[PinIndex];
+            //Plugin_123_pins[PinIndex].PinNo = ExtraTaskSettings.TaskDevicePluginConfigLong[PinIndex];
+            Plugin_123_pins[PinIndex].PinNo = Settings.TaskDevicePluginConfig[event->TaskIndex][PinIndex];
             pinMode(Plugin_123_pins[PinIndex].PinNo, OUTPUT);
           }
           log += F("RGB ");
