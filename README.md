@@ -1,6 +1,6 @@
-#Lights#
+**Lights**
 
-###An ESPEasy Plugin to Control RGB-WW-CW Lights###
+***An ESPEasy Plugin to Control RGB-WW-CW Lights***
 
 Version 1.04 release notes: [ReleaseNotes.md](ReleaseNotes.md)
 
