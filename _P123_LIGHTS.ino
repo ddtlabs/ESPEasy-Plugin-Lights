@@ -240,7 +240,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
         Plugin_123_options.ww_enabled       = Settings.TaskDevicePluginConfigFloat[event->TaskIndex][2];
         Plugin_123_options.cw_enabled       = Settings.TaskDevicePluginConfigFloat[event->TaskIndex][3];
         Plugin_123_options.maxBri_enabled   = Settings.TaskDevicePluginConfigLong[event->TaskIndex][0];
-        Plugin_123_options.sendData_enabled = Settings.TaskDeviceSendData[event->TaskIndex];
+        Plugin_123_options.sendData_enabled = Settings.OLD_TaskDeviceSendData[event->TaskIndex];
         if (Settings.TaskDevicePluginConfig[event->TaskIndex][5] > 0)
           Plugin_123_options.wwTemp = Settings.TaskDevicePluginConfig[event->TaskIndex][5];
         if (Settings.TaskDevicePluginConfig[event->TaskIndex][6] > 0)
