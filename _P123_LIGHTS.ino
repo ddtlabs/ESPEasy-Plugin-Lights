@@ -132,9 +132,9 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
         //Only add boxes if RGB is enabled
         if (Settings.TaskDevicePluginConfigFloat[event->TaskIndex][1]) {
           //Add numeric input boxes. Limited 0-12 to match total input pins.
-          addFormNumericBox( F("Red GPIO"), F("plugin_123_RedPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][0], 0, 12);
-          addFormNumericBox( F("Green GPIO"), F("plugin_123_GreenPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][1], 0, 12);
-          addFormNumericBox( F("Blue GPIO"), F("plugin_123_BluedPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][2], 0, 12);
+          addFormNumericBox( F("Red GPIO"), F("plugin_123_RedPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][0], 0, 16);
+          addFormNumericBox( F("Green GPIO"), F("plugin_123_GreenPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][1], 0, 16);
+          addFormNumericBox( F("Blue GPIO"), F("plugin_123_BluedPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][2], 0, 16);
         }
 
         //Warm White Channel SETUP
@@ -142,7 +142,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
         //Only add boxes if WW is enabled
         if (Settings.TaskDevicePluginConfigFloat[event->TaskIndex][2]) {
           //Add numeric input box. Limited 0-12 to match total input pins.
-          addFormNumericBox( F("WW GPIO"), F("plugin_123_WWPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][3], 0, 12);
+          addFormNumericBox( F("WW GPIO"), F("plugin_123_WWPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][3], 0, 16);
           addFormNumericBox( F("WW Color Temp"), F("plugin_123_WWTemp"), Settings.TaskDevicePluginConfig[event->TaskIndex][5]);
           addUnit(F("kelvin (K)"));
         }
@@ -152,7 +152,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
         //Only add boxes if WW is enabled
         if (Settings.TaskDevicePluginConfigFloat[event->TaskIndex][3]) {
           //Add numeric input box. Limited 0-12 to match total input pins.
-          addFormNumericBox( F("CW GPIO"), F("plugin_123_CWPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][4], 0, 12);
+          addFormNumericBox( F("CW GPIO"), F("plugin_123_CWPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][4], 0, 16);
           addFormNumericBox( F("CW Color Temp"), F("plugin_123_CWTemp"), Settings.TaskDevicePluginConfig[event->TaskIndex][6]);
           addUnit(F("kelvin (K)"));
         }
