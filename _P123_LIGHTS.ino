@@ -134,7 +134,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
           //Add numeric input boxes. Limited 0-12 to match total input pins.
           addFormNumericBox( F("Red GPIO"), F("plugin_123_RedPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][0], 0, 16);
           addFormNumericBox( F("Green GPIO"), F("plugin_123_GreenPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][1], 0, 16);
-          addFormNumericBox( F("Blue GPIO"), F("plugin_123_BluedPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][2], 0, 16);
+          addFormNumericBox( F("Blue GPIO"), F("plugin_123_BluePin"), Settings.TaskDevicePluginConfig[event->TaskIndex][2], 0, 16);
         }
 
         //Warm White Channel SETUP
