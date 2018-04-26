@@ -96,7 +96,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
         Device[deviceCount].InverseLogicOption = false;
         Device[deviceCount].FormulaOption = false;
         Device[deviceCount].ValueCount = 4;
-        Device[deviceCount].SendDataOption = true;
+        Device[deviceCount].SendDataOption = false;
         Device[deviceCount].TimerOption = true;
         Device[deviceCount].TimerOptional = true;
         Device[deviceCount].GlobalSyncOption = true;
@@ -121,74 +121,54 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
 
     case PLUGIN_WEBFORM_LOAD:         // ------------------------------------------->
       {
-        char tmpString[128];
+        //Custom webform sub-header and note
+        String tempString = F("Lights Plugin Version ");
+        tempString+= Plugin_123_version;
+        addFormSubHeader(tempString);
+        addFormNote(F("Check that GPIOs are not used elsewhere (plugins or hardware tab)"));
 
-        string += F("<TR><TD><hr>Lights Plugin V.");
-        string += Plugin_123_version;
-        string += F("<hr></TD><TD><hr>Check that Gpios are not used elsewhere (plugins or hardware tab)<hr><TD>");
-        
-        string += F("<TR><TD>Enable RGB Channels:<TD>");
+        //RGB Channel setup
+        addFormCheckBox(F("Enable RGB Channels"), F("plugin_123_enableRGB"), Settings.TaskDevicePluginConfigFloat[event->TaskIndex][1]);
+        //Only add boxes if RGB is enabled
         if (Settings.TaskDevicePluginConfigFloat[event->TaskIndex][1]) {
-          string += F("<input type=checkbox name=plugin_123_enableRGB checked>");
-          sprintf_P(tmpString, PSTR("<TR><TD>Red Gpio:<TD><input type='text' name='plugin_123_RedPin' value='%u'>"), Settings.TaskDevicePluginConfig[event->TaskIndex][0]);
-          string += tmpString;
-          sprintf_P(tmpString, PSTR("<TR><TD>Green Gpio:<TD><input type='text' name='plugin_123_GreenPin' value='%u'>"), Settings.TaskDevicePluginConfig[event->TaskIndex][1]);
-          string += tmpString;
-          sprintf_P(tmpString, PSTR("<TR><TD>Blue Gpio:<TD><input type='text' name='plugin_123_BluePin' value='%u'>"), Settings.TaskDevicePluginConfig[event->TaskIndex][2]);
-          string += tmpString;
+          //Add numeric input boxes. Limited 0-12 to match total input pins.
+          addFormNumericBox( F("Red GPIO"), F("plugin_123_RedPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][0], 0, 16);
+          addFormNumericBox( F("Green GPIO"), F("plugin_123_GreenPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][1], 0, 16);
+          addFormNumericBox( F("Blue GPIO"), F("plugin_123_BluePin"), Settings.TaskDevicePluginConfig[event->TaskIndex][2], 0, 16);
         }
-        else
-          string += F("<input type=checkbox name=plugin_123_enableRGB>");
 
-        string += F("<TR><TD>Enable WW Channel:<TD>");
+        //Warm White Channel SETUP
+        addFormCheckBox(F("Enable WW Channel"), F("plugin_123_enableWW"), Settings.TaskDevicePluginConfigFloat[event->TaskIndex][2]);
+        //Only add boxes if WW is enabled
         if (Settings.TaskDevicePluginConfigFloat[event->TaskIndex][2]) {
-          string += F("<input type=checkbox name=plugin_123_enableWW checked>");
-          sprintf_P(tmpString, PSTR("<TR><TD>WW Gpio:<TD><input type='text' name='plugin_123_WWPin' value='%u'>"), Settings.TaskDevicePluginConfig[event->TaskIndex][3]);
-          string += tmpString;
-          sprintf_P(tmpString, PSTR("<TR><TD>WW Color Temp (Kelvin):<TD><input type='text' name='plugin_123_WWTemp' value='%u'> (default: 2000)"), Settings.TaskDevicePluginConfig[event->TaskIndex][5]);
-          string += tmpString;
-        }
-        else {
-          string += F("<input type=checkbox name=plugin_123_enableWW>");
+          //Add numeric input box. Limited 0-12 to match total input pins.
+          addFormNumericBox( F("WW GPIO"), F("plugin_123_WWPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][3], 0, 16);
+          addFormNumericBox( F("WW Color Temp"), F("plugin_123_WWTemp"), Settings.TaskDevicePluginConfig[event->TaskIndex][5]);
+          addUnit(F("kelvin (K)"));
         }
 
-        string += F("<TR><TD>Enable CW Channel:<TD>");
+        //Cool White Channel SETUP
+        addFormCheckBox(F("Enable CW Channel"), F("plugin_123_enableCW"), Settings.TaskDevicePluginConfigFloat[event->TaskIndex][3]);
+        //Only add boxes if WW is enabled
         if (Settings.TaskDevicePluginConfigFloat[event->TaskIndex][3]) {
-          string += F("<input type=checkbox name=plugin_123_enableCW checked>");
-          sprintf_P(tmpString, PSTR("<TR><TD>CW Gpio:<TD><input type='text' name='plugin_123_CWPin' value='%u'>"), Settings.TaskDevicePluginConfig[event->TaskIndex][4]);
-          string += tmpString;
-          sprintf_P(tmpString, PSTR("<TR><TD>CW Color Temp (Kelvin):<TD><input type='text' name='plugin_123_CWTemp' value='%u'> (default: 6000)"), Settings.TaskDevicePluginConfig[event->TaskIndex][6]);
-          string += tmpString;
-        }
-        else
-          string += F("<input type=checkbox name=plugin_123_enableCW>");
-
-        if (Settings.TaskDevicePluginConfigFloat[event->TaskIndex][2]        //WW+CW active
-            && Settings.TaskDevicePluginConfigFloat[event->TaskIndex][3])   
-        { 
-          string += F("<TR><TD>Maximize White Brightness:<TD>");
-          if (Settings.TaskDevicePluginConfigLong[event->TaskIndex][0])
-            string += F("<input type=checkbox name=plugin_123_maxBri checked>");
-          else
-            string += F("<input type=checkbox name=plugin_123_maxBri>");
+          //Add numeric input box. Limited 0-12 to match total input pins.
+          addFormNumericBox( F("CW GPIO"), F("plugin_123_CWPin"), Settings.TaskDevicePluginConfig[event->TaskIndex][4], 0, 16);
+          addFormNumericBox( F("CW Color Temp"), F("plugin_123_CWTemp"), Settings.TaskDevicePluginConfig[event->TaskIndex][6]);
+          addUnit(F("kelvin (K)"));
         }
 
-          sprintf_P(tmpString, PSTR("<TR><TD>Pon Brightness (%):<TD><input type='text' name='plugin_123_ponVal' value='%u'>"), Settings.TaskDevicePluginConfig[event->TaskIndex][7]);
-          string += tmpString;
-          
+        //Setup a checkbox for Maximize White brightness
+        addFormCheckBox(F("Maximize White Brightness"), F("plugin_123_maxBri"), Settings.TaskDevicePluginConfigLong[event->TaskIndex][0]);
 
-//          sprintf_P(tmpString, PSTR("<TR><TD>Default Fading Time (s):<TD><input type='text' name='plugin_123_fadingTime' value='%u'>"), Settings.TaskDevicePluginConfigFloat[event->TaskIndex][0]);
-//          //sprintf_P(tmpString, PSTR("<TR><TD>Default Fading Time (s):<TD><input type='text' name='plugin_123_fadingTime' value='%u'>"), Settings.TaskDevicePluginConfigFloat[event->TaskIndex][0]);
-//          string += tmpString;
-        string += F("<TR><TD>Default Fading Time (s):<TD><input type='text' name='plugin_123_fadingTime' value='");
-        string += Settings.TaskDevicePluginConfigFloat[event->TaskIndex][0];
-        string += F("'> (-1 =&gt; disable fading timer)");
+        //Setup a numeric input for Pon Brightness
+        addFormNumericBox( F("Pon Brightness"), F("plugin_123_ponVal"), Settings.TaskDevicePluginConfig[event->TaskIndex][7]);
 
-        string += F("<TR><TD>Send Boot State:<TD>");
-         if (Settings.TaskDevicePluginConfigLong[event->TaskIndex][1])
-           string += F("<input type=checkbox name=plugin_123_sendBootState checked>");
-        else
-          string += F("<input type=checkbox name=plugin_123_sendBootState>");
+        //Setup a numeric input for fade time
+        addFormNumericBox( F("Default Fade Time"), F("plugin_123_fadingTime"), Settings.TaskDevicePluginConfigFloat[event->TaskIndex][0]);
+        addUnit(F("seconds (-1 to disable)"));
+
+        //Setup a checkbox to send bootstate
+        addFormCheckBox(F("Send Boot State"), F("plugin_123_sendBootState"), Settings.TaskDevicePluginConfigLong[event->TaskIndex][1]);
 
         success = true;
         break;
@@ -240,7 +220,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
         Plugin_123_options.ww_enabled       = Settings.TaskDevicePluginConfigFloat[event->TaskIndex][2];
         Plugin_123_options.cw_enabled       = Settings.TaskDevicePluginConfigFloat[event->TaskIndex][3];
         Plugin_123_options.maxBri_enabled   = Settings.TaskDevicePluginConfigLong[event->TaskIndex][0];
-        Plugin_123_options.sendData_enabled = Settings.TaskDeviceSendData[event->TaskIndex];
+        //Plugin_123_options.sendData_enabled = Settings.TaskDeviceSendData[event->TaskIndex];
         if (Settings.TaskDevicePluginConfig[event->TaskIndex][5] > 0)
           Plugin_123_options.wwTemp = Settings.TaskDevicePluginConfig[event->TaskIndex][5];
         if (Settings.TaskDevicePluginConfig[event->TaskIndex][6] > 0)
@@ -256,13 +236,13 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
             pinMode(Plugin_123_pins[PinIndex].PinNo, OUTPUT);
           }
           log += F("RGB ");
-        } 
+        }
         else { log += F("noRGB "); }
-        
+
         if (Plugin_123_options.ww_enabled) {
           Plugin_123_pins[3].PinNo = Settings.TaskDevicePluginConfig[event->TaskIndex][3];
           log += F("WW ");
-        } 
+        }
         else { log += F("noWW "); }
 
         if (Plugin_123_options.cw_enabled) {
@@ -288,11 +268,11 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
           Plugin_123_setLightParams("ct");
           Plugin_123_setPins_Initiate();
           log += F("PON]");
-        } 
+        }
         else { log += F("noPON]"); }
-        
+
         addLog(LOG_LEVEL_INFO, log);
-        
+
         Plugin_123_init = true;
         success = true;
 //        if (Settings.TaskDevicePluginConfigLong[event->TaskIndex][1]) Plugin_123_triggerSendDataAfterBoot = true;
@@ -353,7 +333,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
           {
             Plugin_123_lightParam.rgbStr = parseString(string, 3);         // rgb string (eg. 11FFAA)
             Plugin_123_lightParam.fading = (parseString(string, 4) == "")  // transiotion time
-              ? Plugin_123_defaultFadingTime 
+              ? Plugin_123_defaultFadingTime
               : parseString(string, 4).toFloat();
             Plugin_123_setCurrentLevelToZeroIfOff();
             Plugin_123_setLightParams("rgb");
@@ -361,12 +341,12 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
             Plugin_123_setPins_Initiate();
           }
 
- 
+
           else if (subCommand == F("ct"))
           {
             Plugin_123_lightParam.ct     = event->Par2;                    // color temp val (eg. 3200)
             Plugin_123_lightParam.fading = (parseString(string, 4) == "")  // transition time
-              ? Plugin_123_defaultFadingTime 
+              ? Plugin_123_defaultFadingTime
               : parseString(string, 4).toFloat();
             if (parseString(string, 5) != "")  // pct
               Plugin_123_lightParam.pct = parseString(string, 5).toInt();
@@ -380,7 +360,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
           else if (subCommand == F("pct")) {
             Plugin_123_lightParam.pct    = event->Par2;                    // white brightness in %
             Plugin_123_lightParam.fading = (parseString(string, 4) == "")  // transition time
-              ? Plugin_123_defaultFadingTime 
+              ? Plugin_123_defaultFadingTime
               : parseString(string, 4).toFloat();
             if (parseString(string, 5) != "")  // ct
               Plugin_123_lightParam.ct = parseString(string, 5).toInt();
@@ -397,8 +377,8 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
 
 
           if (subCommand == F("on")) {
-            Plugin_123_lightParam.fading = (parseString(string, 3) == "") 
-              ? Plugin_123_defaultFadingTime 
+            Plugin_123_lightParam.fading = (parseString(string, 3) == "")
+              ? Plugin_123_defaultFadingTime
               : parseString(string, 3).toFloat();
             Plugin_123_setCurrentLevelToZeroIfOff();
             if      (Plugin_123_lightParam.colorMode == 1) { Plugin_123_setLightParams("rgb"); }
@@ -409,8 +389,8 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
 
 
           if (subCommand == F("off")) {
-            Plugin_123_lightParam.fading = (parseString(string, 3) == "") 
-              ? Plugin_123_defaultFadingTime 
+            Plugin_123_lightParam.fading = (parseString(string, 3) == "")
+              ? Plugin_123_defaultFadingTime
               : parseString(string, 3).toFloat();
 
             // Save current FadingTargetLevel, will be restored in Plugin_123_setPins_Finish()
@@ -424,8 +404,8 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
           }
 
 
-          else if ( subCommand != F("rgb") && subCommand != F("ct") 
-                 && subCommand != F("pct") && subCommand != F("toggle") 
+          else if ( subCommand != F("rgb") && subCommand != F("ct")
+                 && subCommand != F("pct") && subCommand != F("toggle")
                  && subCommand != F("on")  && subCommand != F("off") )
           {
             log = F("Lights: unknown subcommand: ");
@@ -444,7 +424,7 @@ boolean Plugin_123(byte function, struct EventStruct *event, String& string)
             SendStatus(event->Source, json); // send http response to controller (JSON fmormat)
             break;
           }
-          
+
 
         } // command lights
 
@@ -510,17 +490,17 @@ void Plugin_123_setLightParams(String cmd)
     for (int PinIndex = 0; PinIndex < 3; PinIndex++) {
       Plugin_123_pins[PinIndex].FadingTargetLevel = 0;
     }
-   
+
     float wwTemp = Plugin_123_options.wwTemp;
     float cwTemp = Plugin_123_options.cwTemp;
-    
+
     // correct ct values if out of range
     if (Plugin_123_lightParam.ct < wwTemp) {Plugin_123_lightParam.ct = wwTemp;}
     if (Plugin_123_lightParam.ct > cwTemp) {Plugin_123_lightParam.ct = cwTemp;}
-   
+
     //maxBri !constant
     float temp = Plugin_123_lightParam.ct;
-    
+
     cwTemp -= wwTemp;
     temp   -= wwTemp;
     float cwFactor = temp / cwTemp;
@@ -551,7 +531,7 @@ void Plugin_123_setLightParams(String cmd)
 
   } // ct (ww/cw)
 
-  
+
   // --- ct !ww !cw --------------------------------------------------------------------
   else if (cmd == F("ct") && !Plugin_123_options.ww_enabled && !Plugin_123_options.cw_enabled)
   {
@@ -595,7 +575,7 @@ void Plugin_123_setPins_Initiate()
     if (Plugin_123_pins[PinIndex].FadingTargetLevel > 1019 )
       Plugin_123_pins[PinIndex].FadingTargetLevel = 1023;
   }
-  
+
   // fading will be done in Plugin_123_FadingTimer (called by timer, triggered by FadingDirection != 0)
   if (Plugin_123_lightParam.fading > 0 && Plugin_123_defaultFadingTime >= 0) {
     for (int PinIndex = 0; PinIndex < 5; PinIndex++) {
@@ -664,7 +644,7 @@ void Plugin_123_setPins_Finish()
   }
 
   // send current values via controller plugin, done in PLUGIN_TEN_PER_SECOND
-//  if (Plugin_123_options.sendData_enabled)  Plugin_123_triggerSendData = true; 
+//  if (Plugin_123_options.sendData_enabled)  Plugin_123_triggerSendData = true;
 }
 
 
@@ -686,7 +666,7 @@ void Plugin_123_FadingTimer()
         {
           Plugin_123_pins[PinIndex].FadingDirection = 0;
           Plugin_123_pins[PinIndex].CurrentLevel = Plugin_123_pins[PinIndex].FadingTargetLevel;
-          if (Plugin_123_pins[0].FadingDirection == 0 && Plugin_123_pins[1].FadingDirection == 0 && Plugin_123_pins[2].FadingDirection == 0 && Plugin_123_pins[3].FadingDirection == 0 && Plugin_123_pins[4].FadingDirection == 0) {           
+          if (Plugin_123_pins[0].FadingDirection == 0 && Plugin_123_pins[1].FadingDirection == 0 && Plugin_123_pins[2].FadingDirection == 0 && Plugin_123_pins[3].FadingDirection == 0 && Plugin_123_pins[4].FadingDirection == 0) {
             addLog(LOG_LEVEL_INFO, "Lights: Fade up complete");
             Plugin_123_setPins_Finish();
           }
@@ -746,7 +726,7 @@ void Plugin_123_ct2RGB()
   // reduce ct to a valid/useful value
   if (Plugin_123_lightParam.ct > 5500) Plugin_123_lightParam.ct = 5500;
   if (Plugin_123_lightParam.ct < 2500) Plugin_123_lightParam.ct = 2500;
-  
+
   // kelvin -> mired
   double ct = 1000000/Plugin_123_lightParam.ct;
   // adjusted by 1000K
@@ -761,7 +741,7 @@ void Plugin_123_ct2RGB()
   if (r < 0)     r = 0 ;
   if (r > 255)   r = 255 ;
 
-  g = (temp <= 66) 
+  g = (temp <= 66)
     ? 99.4708025861 * log(temp) - 161.1195681661
     : pow(288.1221695283 * (temp - 60), -0.0755148492);
   if (g < 0)   g = 0 ;
@@ -859,8 +839,5 @@ void Plugin_123_dumpValues()
   Serial.print(F("Lights: cw: "));            Serial.print(Plugin_123_pins[4].CurrentLevel); Serial.print(F(" -> ")); Serial.println(Plugin_123_pins[4].FadingTargetLevel);
   Serial.print(F("Lights: state: "));         Serial.print(Plugin_123_lightParam.state);
   Serial.println(F(""));
-  
+
 }
-
-
-
